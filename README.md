@@ -125,6 +125,4 @@ Feel free to explore and test the API using the provided live demo and Postman c
 - This example uses the AWS Serverless Application Model (SAM). Modify the `template.yaml` file according to your needs.
 - Customize the DynamoDB table names (`Users` and `Transactions`) in the code and configuration files as required.
 
-Feel free to explore and extend this API according to your project requirements!
-
 
