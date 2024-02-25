@@ -37,7 +37,7 @@ Before getting started, ensure that you have the following prerequisites:
    DOCKER_HOST=unix://$HOME/.docker/run/docker.sock sam local start-api
    ```
 
-   This command will start a local API server using SAM CLI and Docker. You can test your API locally by making requests to `http://localhost:3000`.
+   This command will start a local API server using SAM CLI and Docker. You can test your API locally by making requests to `http://127.0.0.1:3000/`.
 
 ## Endpoints
 
