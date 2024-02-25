@@ -61,6 +61,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent) => {
     switch (httpRequest) {
       //  If the request is a POST request
       case "POST":
+        if (!userId) { 
+          throw new Error("User ID is required");
+        }
         // Get the user's balance
         const user: User = await getUser(ddbDocClient, userId) as User;
         const balance: number = user?.balance || 0;
@@ -83,6 +86,16 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent) => {
             "Invalid transaction type. Must be 'debit' or 'credit'."
           );
         }
+        // Check if the amount is valid
+        if (!amount) { 
+          throw new Error("Amount is required");
+        } 
+
+        // Check if the amount is a valid number
+        if (isNaN(parseFloat(amount)) || !isFinite(amount) || parseFloat(amount) <= 0){
+          throw new Error("Invalid amount");
+        }
+
         // Create a new transaction
         const transactionId = v4();
 
@@ -90,7 +103,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent) => {
         const transaction: Transaction = {
           userId,
           transactionId,
-          amount,
+          amount: parseFloat(amount),
           type,
           createdAt: new Date().toISOString(),
         };
@@ -111,6 +124,10 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent) => {
 
       // If the request is a PUT request
       case "PUT":
+        // Check if the user's name is valid
+        if (!body.name) {
+          throw new Error("Name is required");
+        }
         // Prepare the user object
         const userBody = {
           name: body.name,

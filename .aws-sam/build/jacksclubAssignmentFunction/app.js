@@ -44,6 +44,9 @@ var lambdaHandler = async (event) => {
   try {
     switch (httpRequest) {
       case "POST":
+        if (!userId) {
+          throw new Error("User ID is required");
+        }
         const user = await getUser(ddbDocClient, userId);
         const balance = user?.balance || 0;
         response = {
@@ -60,11 +63,17 @@ var lambdaHandler = async (event) => {
             "Invalid transaction type. Must be 'debit' or 'credit'."
           );
         }
+        if (!amount) {
+          throw new Error("Amount is required");
+        }
+        if (isNaN(parseFloat(amount)) || !isFinite(amount) || parseFloat(amount) <= 0) {
+          throw new Error("Invalid amount");
+        }
         const transactionId = (0, import_uuid.v4)();
         const transaction = {
           userId,
           transactionId,
-          amount,
+          amount: parseFloat(amount),
           type,
           createdAt: new Date().toISOString()
         };
@@ -79,6 +88,9 @@ var lambdaHandler = async (event) => {
         };
         break;
       case "PUT":
+        if (!body.name) {
+          throw new Error("Name is required");
+        }
         const userBody = {
           name: body.name,
           userId: (0, import_uuid.v4)(),
